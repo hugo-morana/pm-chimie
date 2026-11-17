@@ -46,6 +46,7 @@ struct Thumb: View {
 struct FicheView: View {
     @Environment(PalaceModel.self) private var model
     @State private var lightbox: LightboxItem? = nil
+    @State private var detail: LightboxItem? = nil
 
     var body: some View {
         let T = model.testLook
@@ -73,6 +74,7 @@ struct FicheView: View {
         .padding(.horizontal, 14).padding(.bottom, 10).padding(.top, 4)
         .foregroundStyle(.white)
         .background(panelBG.ignoresSafeArea(edges: .bottom))
+        .sheet(item: $detail) { item in ElementDetailView(n: item.n) }
         .fullScreenCover(item: $lightbox) { item in
             Lightbox(n: item.n, masked: (T?.mask ?? false) && item.n == n) { lightbox = nil }
         }
@@ -103,6 +105,16 @@ struct FicheView: View {
         let E = PM.elements[n]
         VStack(alignment: .leading, spacing: 12) {
             Text(E.deco).font(.subheadline).foregroundStyle(.white.opacity(0.85))
+            if PropsStore.get(n) != nil {
+                Button { detail = LightboxItem(n: n) } label: {
+                    Label("Fiche complète : propriétés, usages, isotopes", systemImage: "chart.pie.fill")
+                        .font(.subheadline.weight(.semibold))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 8)
+                        .background(Color.copper.opacity(0.85), in: RoundedRectangle(cornerRadius: 10))
+                }
+                .buttonStyle(.plain)
+            }
             if n < PM.maxN {
                 linkRow(img: n + 1, label: "⟶ vers \(n + 1) · \(PM.elements[n + 1].nom)", text: E.lien)
             }

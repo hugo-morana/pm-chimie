@@ -1,0 +1,18 @@
+{
+  "64": {
+    "description": "Métal des terres rares gris argenté, souple et facile à travailler. À l'air humide il se ternit vite ; il réagit lentement avec l'eau et se dissout dans les acides dilués. C'est l'élément naturel qui capture le mieux les neutrons, et il devient magnétique comme le fer juste sous la température ambiante (vers 20 °C).",
+    "usages": "Surtout connu en médecine : ses complexes servent de produit de contraste pour l'IRM. On le retrouve aussi dans les barres de contrôle et certains combustibles des réacteurs nucléaires, dans les aimants et l'électronique (grenats pour les hyperfréquences, anciens disques magnéto-optiques), dans des alliages avec le fer ou le chrome, en radiographie aux neutrons et dans les réfrigérateurs magnétiques expérimentaux.",
+    "parts": [
+      {"label": "Imagerie médicale (IRM)", "pct": 42},
+      {"label": "Aimants et électronique", "pct": 21},
+      {"label": "Nucléaire", "pct": 18},
+      {"label": "Alliages et froid magnétique", "pct": 11},
+      {"label": "Autres (luminophores, lasers…)", "pct": 8}
+    ],
+    "partsSource": "Répartition indicative du marché, 2025-2026",
+    "etymologie": "Tiré de la gadolinite, un minéral lui-même nommé en l'honneur du chimiste finlandais Johan Gadolin.",
+    "symbolique": "personnalité",
+    "decouvreurs": "Jean Charles Galissard de Marignac (oxyde, 1880) ; Paul-Émile Lecoq de Boisbaudran, qui lui donne son nom (1886)",
+    "sgh": [{"code": "SGH02", "label": "Inflammable (sous forme de poudre)"}]
+  }
+}
