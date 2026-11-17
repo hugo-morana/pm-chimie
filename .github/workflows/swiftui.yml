@@ -1,0 +1,39 @@
+name: Compilation SwiftUI
+
+on:
+  push:
+    paths:
+      - "swiftui/**"
+      - ".github/workflows/swiftui.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Xcode
+        run: |
+          sudo xcode-select -s "$(ls -d /Applications/Xcode_16*.app | sort -V | tail -1)"
+          xcodebuild -version
+
+      - name: Schémas
+        working-directory: swiftui/PMChimie.swiftpm
+        run: xcodebuild -list
+
+      - name: Compilation (simulateur iOS)
+        working-directory: swiftui/PMChimie.swiftpm
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -scheme "PM Chimie" \
+            -destination "generic/platform=iOS Simulator" \
+            -derivedDataPath "$RUNNER_TEMP/dd" \
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1 | tee "$RUNNER_TEMP/build.log"
+
+      - name: Erreurs
+        if: failure()
+        run: grep -E "error:|warning: unre" "$RUNNER_TEMP/build.log" | sort -u | head -200 || true
