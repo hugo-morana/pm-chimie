@@ -45,7 +45,17 @@ jobs:
         run: |
           set -o pipefail
           KEY="$RUNNER_TEMP/AuthKey_$ASC_KEY_ID.p8"
-          printf '%s\n' "$ASC_KEY_P8" > "$KEY"
+          # remet la clé au format PEM (retours à la ligne perdus au copier-coller, espaces, etc.)
+          printf '%s' "$ASC_KEY_P8" | python3 -c '
+          import sys, re, textwrap
+          t = sys.stdin.read()
+          t = re.sub(r"-----(BEGIN|END)[A-Z ]*-----", "", t)
+          b = re.sub(r"[^A-Za-z0-9+/=]", "", t)
+          print("-----BEGIN PRIVATE KEY-----")
+          print("\n".join(textwrap.wrap(b, 64)))
+          print("-----END PRIVATE KEY-----")
+          sys.stderr.write("clé : %d caractères base64\n" % len(b))
+          ' > "$KEY"
           AUTH=(-allowProvisioningUpdates -authenticationKeyPath "$KEY" -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID")
           # numéro de build unique à chaque envoi
           BUILD=$(( GITHUB_RUN_NUMBER + 1 ))
@@ -53,6 +63,7 @@ jobs:
           sed -i '' "s/teamIdentifier: \"[^\"]*\"/teamIdentifier: \"$TEAM_ID\"/" Package.swift
           grep -n "bundleVersion\|teamIdentifier" Package.swift
           {
+            echo "cle: $(grep -v -- ----- "$KEY" | tr -d '\n' | wc -c | tr -d ' ') caracteres base64 (200 attendus)"
             xcodebuild archive \
               -scheme "PM Chimie" \
               -destination "generic/platform=iOS" \
@@ -88,7 +99,7 @@ jobs:
             echo "run: $GITHUB_RUN_NUMBER"
             echo "status: ${{ job.status }}"
             echo
-            grep -iE "error|warning: |EXPORT|ARCHIVE|upload|Secrets" "$LOG" | sort -u | head -300
+            grep -iE "error|warning: |EXPORT|ARCHIVE|upload|Secrets|^cle:" "$LOG" | sort -u | head -300
           } > "$OUT/errors.txt"
           tail -300 "$LOG" > "$OUT/tail.txt"
           cd "$OUT"
