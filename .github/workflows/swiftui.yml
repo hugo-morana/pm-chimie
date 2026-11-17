@@ -7,6 +7,9 @@ on:
       - ".github/workflows/swiftui.yml"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: macos-15
@@ -34,6 +37,24 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             2>&1 | tee "$RUNNER_TEMP/build.log"
 
-      - name: Erreurs
-        if: failure()
-        run: grep -E "error:|warning: unre" "$RUNNER_TEMP/build.log" | sort -u | head -200 || true
+      - name: Journal des erreurs (branche swiftui-build-log)
+        if: always()
+        run: |
+          LOG="$RUNNER_TEMP/build.log"
+          touch "$LOG"
+          OUT="$RUNNER_TEMP/out"; mkdir -p "$OUT"
+          {
+            echo "commit: $GITHUB_SHA"
+            echo "status: ${{ job.status }}"
+            echo
+            grep -E "error|BUILD" "$LOG" | sort -u | head -300
+          } > "$OUT/errors.txt"
+          tail -400 "$LOG" > "$OUT/tail.txt"
+          cd "$OUT"
+          git init -q
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git checkout -q -b swiftui-build-log
+          git add .
+          git commit -q -m "Journal de compilation $GITHUB_SHA"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" swiftui-build-log
