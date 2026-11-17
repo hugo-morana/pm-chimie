@@ -44,3 +44,7 @@ iOS 17 minimum.
 
 Remplacer `Resources/NNN.webp` et `Resources/tNNN.webp`, ou régénérer `Resources/elements.json`
 depuis `src/data.py` du dépôt web (`python3 src/data.py`, puis copier `src/elements.json`).
+
+## TestFlight
+
+Chaque modification de ce dossier sur la branche `swiftui` est compilée, signée et envoyée sur TestFlight (workflow `.github/workflows/testflight.yml`).
