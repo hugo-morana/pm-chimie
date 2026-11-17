@@ -18,6 +18,10 @@ Visite guidée (‹ › élément, « » dizaine, zoom en 3 temps), visite libre
 
 Sur GitHub Pages, la progression est gardée dans le navigateur. Dans l'artifact claude.ai, elle est aussi enregistrée dans le compte.
 
+## Version iPhone / iPad (SwiftUI)
+
+Le dossier `swiftui/PMChimie.swiftpm` contient une version native de l'app (SwiftUI + SceneKit, iOS 17). Ouvre-le dans Xcode sur Mac ou dans Swift Playgrounds sur iPad. Détails dans `swiftui/PMChimie.swiftpm/README.md`.
+
 ## Fichiers
 
 | Chemin | Rôle |
