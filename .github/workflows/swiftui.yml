@@ -33,9 +33,47 @@ jobs:
           xcodebuild build \
             -scheme "PM Chimie" \
             -destination "generic/platform=iOS Simulator" \
+            -configuration Release \
             -derivedDataPath "$RUNNER_TEMP/dd" \
             CODE_SIGNING_ALLOWED=NO \
             2>&1 | tee "$RUNNER_TEMP/build.log"
+
+      - name: Zip pour Appetize (branche appetize)
+        env:
+          APPETIZE_TOKEN: ${{ secrets.APPETIZE_TOKEN }}
+        run: |
+          APP=$(find "$RUNNER_TEMP/dd/Build/Products" -maxdepth 2 -name "*.app" -path "*iphonesimulator*" | head -1)
+          echo "App : $APP"
+          OUT="$RUNNER_TEMP/appetize"; mkdir -p "$OUT"
+          cd "$(dirname "$APP")"
+          ditto -c -k --sequesterRsrc --keepParent "$(basename "$APP")" "$OUT/PMChimie-simulateur.zip"
+          ls -la "$OUT"
+          {
+            echo "commit: $GITHUB_SHA"
+            echo "fichier: PMChimie-simulateur.zip (à déposer sur https://appetize.io/upload, plateforme iOS)"
+          } > "$OUT/LISEZMOI.txt"
+          if [ -n "$APPETIZE_TOKEN" ]; then
+            # mise à jour de la même app Appetize si on connaît déjà sa clé
+            KEY=""
+            git -C "$GITHUB_WORKSPACE" fetch -q --depth 1 origin appetize 2>/dev/null && KEY=$(git -C "$GITHUB_WORKSPACE" show FETCH_HEAD:publicKey.txt 2>/dev/null || true)
+            URL="https://api.appetize.io/v1/apps"; [ -n "$KEY" ] && URL="$URL/$KEY"
+            RES=$(curl -sS -X POST "$URL" -H "X-API-KEY: $APPETIZE_TOKEN" -F "file=@$OUT/PMChimie-simulateur.zip" -F "platform=ios")
+            PK=$(echo "$RES" | python3 -c "import sys,json;print(json.load(sys.stdin).get('publicKey',''))" || true)
+            [ -z "$PK" ] && echo "Appetize : envoi refusé : $(echo "$RES" | head -c 300)" >> "$OUT/LISEZMOI.txt"
+            if [ -n "$PK" ]; then
+              echo "$PK" > "$OUT/publicKey.txt"
+              echo "lien: https://appetize.io/app/$PK" >> "$OUT/LISEZMOI.txt"
+            fi
+          fi
+          cat "$OUT/LISEZMOI.txt"
+          cd "$OUT"
+          git init -q
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git checkout -q -b appetize
+          git add .
+          git commit -q -m "App simulateur $GITHUB_SHA"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" appetize
 
       - name: Journal des erreurs (branche swiftui-build-log)
         if: always()
