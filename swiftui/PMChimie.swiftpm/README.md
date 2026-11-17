@@ -47,4 +47,4 @@ depuis `src/data.py` du dépôt web (`python3 src/data.py`, puis copier `src/ele
 
 ## TestFlight
 
-Chaque modification de ce dossier sur la branche `swiftui` est compilée, signée et envoyée sur TestFlight (workflow `.github/workflows/testflight.yml`).
+Chaque modification de ce dossier sur la branche `swiftui` est compilée, signée et envoyée sur TestFlight (workflow `.github/workflows/testflight.yml`). Le numéro de build augmente à chaque envoi.
