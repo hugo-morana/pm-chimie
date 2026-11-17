@@ -1,0 +1,101 @@
+name: TestFlight
+
+on:
+  push:
+    branches: [swiftui]
+    paths:
+      - "swiftui/**"
+      - ".github/workflows/testflight.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  testflight:
+    runs-on: macos-15-intel
+    timeout-minutes: 45
+    env:
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+      TEAM_ID: ${{ secrets.TEAM_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Secrets présents ?
+        id: check
+        run: |
+          if [ -z "$ASC_KEY_ID" ] || [ -z "$ASC_ISSUER_ID" ] || [ -z "$ASC_KEY_P8" ] || [ -z "$TEAM_ID" ]; then
+            echo "Secrets manquants : envoi TestFlight ignoré." | tee "$RUNNER_TEMP/build.log"
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Xcode
+        if: steps.check.outputs.ok == 'true'
+        run: |
+          sudo xcode-select -s "$(ls -d /Applications/Xcode_*.app | grep -v -i beta | sort -V | tail -1)"
+          xcodebuild -version
+
+      - name: Archive et envoi
+        if: steps.check.outputs.ok == 'true'
+        working-directory: swiftui/PMChimie.swiftpm
+        run: |
+          set -o pipefail
+          KEY="$RUNNER_TEMP/AuthKey_$ASC_KEY_ID.p8"
+          printf '%s\n' "$ASC_KEY_P8" > "$KEY"
+          AUTH=(-allowProvisioningUpdates -authenticationKeyPath "$KEY" -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID")
+          # numéro de build unique à chaque envoi
+          BUILD=$(( GITHUB_RUN_NUMBER + 1 ))
+          sed -i '' "s/bundleVersion: \"[0-9]*\"/bundleVersion: \"$BUILD\"/" Package.swift
+          sed -i '' "s/teamIdentifier: \"[^\"]*\"/teamIdentifier: \"$TEAM_ID\"/" Package.swift
+          grep -n "bundleVersion\|teamIdentifier" Package.swift
+          {
+            xcodebuild archive \
+              -scheme "PM Chimie" \
+              -destination "generic/platform=iOS" \
+              -archivePath "$RUNNER_TEMP/PMChimie.xcarchive" \
+              DEVELOPMENT_TEAM="$TEAM_ID" CODE_SIGN_STYLE=Automatic \
+              "${AUTH[@]}"
+            cat > "$RUNNER_TEMP/export.plist" <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>teamID</key><string>$TEAM_ID</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict></plist>
+          PLIST
+            xcodebuild -exportArchive \
+              -archivePath "$RUNNER_TEMP/PMChimie.xcarchive" \
+              -exportOptionsPlist "$RUNNER_TEMP/export.plist" \
+              -exportPath "$RUNNER_TEMP/export" \
+              "${AUTH[@]}"
+          } 2>&1 | tee "$RUNNER_TEMP/build.log"
+          rm -f "$KEY"
+
+      - name: Journal (branche testflight-log)
+        if: always()
+        run: |
+          LOG="$RUNNER_TEMP/build.log"; touch "$LOG"
+          OUT="$RUNNER_TEMP/out"; mkdir -p "$OUT"
+          {
+            echo "commit: $GITHUB_SHA"
+            echo "run: $GITHUB_RUN_NUMBER"
+            echo "status: ${{ job.status }}"
+            echo
+            grep -iE "error|warning: |EXPORT|ARCHIVE|upload|Secrets" "$LOG" | sort -u | head -300
+          } > "$OUT/errors.txt"
+          tail -300 "$LOG" > "$OUT/tail.txt"
+          cd "$OUT"
+          git init -q
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git checkout -q -b testflight-log
+          git add .
+          git commit -q -m "Journal TestFlight $GITHUB_SHA"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" testflight-log
