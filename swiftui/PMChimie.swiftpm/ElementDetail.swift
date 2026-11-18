@@ -21,6 +21,25 @@ struct UsagePart: Decodable, Hashable {
 struct Pictogramme: Decodable, Hashable {
     let code: String
     let label: String
+
+    static let labels = ["SGH01": "Explosif", "SGH02": "Inflammable", "SGH03": "Comburant",
+                         "SGH04": "Gaz sous pression", "SGH05": "Corrosif", "SGH06": "Toxique",
+                         "SGH07": "Nocif ou irritant", "SGH08": "Dangereux pour la santé",
+                         "SGH09": "Dangereux pour l'environnement"]
+
+    private enum Keys: String, CodingKey { case code, label }
+
+    /// Accepte "SGH02" ou {"code": "SGH02", "label": "…"}.
+    init(from decoder: Decoder) throws {
+        if let single = try? decoder.singleValueContainer(), let c = try? single.decode(String.self) {
+            code = c
+            label = Self.labels[c] ?? c
+        } else {
+            let k = try decoder.container(keyedBy: Keys.self)
+            code = try k.decode(String.self, forKey: .code)
+            label = (try? k.decode(String.self, forKey: .label)) ?? Self.labels[code] ?? code
+        }
+    }
 }
 
 struct FicheTexte: Decodable {
@@ -31,6 +50,7 @@ struct FicheTexte: Decodable {
     let etymologie: String?
     let symbolique: String?
     let decouvreurs: String?
+    let histoire: String?
     let sgh: [Pictogramme]?
 }
 
@@ -172,7 +192,9 @@ struct ElementDetailView: View {
                         IsotopesCard(P: P, symbol: E.s, accent: accent)
                         AbondanceCard(P: P, accent: accent)
                         HistoireCard(P: P, accent: accent)
-                        if let sgh = P.texte?.sgh, !sgh.isEmpty { SGHCard(items: sgh) }
+                        if !(P.texte?.sgh ?? []).isEmpty || (P.radioactif ?? false) {
+                            SGHCard(items: P.texte?.sgh ?? [], radioactif: P.radioactif ?? false)
+                        }
                         Text("Données : base mendeleev (Python). Textes reformulés.")
                             .font(.caption2).foregroundStyle(.secondary).padding(.top, 4)
                     }
@@ -376,9 +398,7 @@ struct TextCards: View {
                 .buttonStyle(.plain)
             }
         }
-        if let s = t.partsSource {
-            Text(s).font(.caption2).foregroundStyle(.secondary)
-        }
+        Text(t.partsSource ?? "Répartition indicative (ordre de grandeur)").font(.caption2).foregroundStyle(.secondary)
     }
 }
 
@@ -795,6 +815,15 @@ struct HistoireCard: View {
                     Text(d).font(.subheadline).fixedSize(horizontal: false, vertical: true)
                 }
             }
+            if let h = P.texte?.histoire {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Histoire de la découverte").font(.subheadline.weight(.semibold)).foregroundStyle(accent)
+                    Text(h).font(.subheadline).fixedSize(horizontal: false, vertical: true)
+                }
+                .padding(10)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(accent.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
+            }
             if let e = P.texte?.etymologie {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Étymologie").font(.subheadline).foregroundStyle(.secondary)
@@ -833,8 +862,24 @@ struct DiscoveryTimeline: View {
 
 struct SGHCard: View {
     let items: [Pictogramme]
+    var radioactif = false
     var body: some View {
-        Card(title: "Sécurité (SGH)", icon: "exclamationmark.triangle", accent: .red) {
+        Card(title: "Sécurité", icon: "exclamationmark.triangle", accent: .red) {
+            if radioactif {
+                HStack(spacing: 14) {
+                    ZStack {
+                        Image(systemName: "triangle.fill").font(.system(size: 46)).foregroundStyle(.yellow)
+                        Image(systemName: "triangle").font(.system(size: 46)).foregroundStyle(.black)
+                        Text("☢").font(.system(size: 20)).foregroundStyle(.black).offset(y: 5)
+                    }
+                    .frame(width: 60, height: 60)
+                    VStack(alignment: .leading) {
+                        Text("Radioactif").font(.headline)
+                        Text("Aucun isotope stable : l'élément se désintègre en émettant des rayonnements.")
+                            .font(.subheadline).foregroundStyle(.secondary)
+                    }
+                }
+            }
             ForEach(items, id: \.code) { p in
                 HStack(spacing: 14) {
                     ZStack {

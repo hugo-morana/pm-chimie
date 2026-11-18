@@ -1,7 +1,7 @@
 """Génère swiftui/PMChimie.swiftpm/Resources/proprietes.json (données chiffrées des 118 éléments).
 
 Source : paquet Python `mendeleev` (pip install mendeleev). Les textes rédigés (description,
-usages, étymologie…) sont dans src/fiches_fr.json et fusionnés ici.
+usages, étymologie…) sont dans src/fiches/*.json et fusionnés ici.
 
     python3 src/proprietes.py
 """
@@ -11,7 +11,7 @@ from mendeleev.fetch import fetch_table
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "swiftui", "PMChimie.swiftpm", "Resources", "proprietes.json")
-TEXTES = os.path.join(ROOT, "src", "fiches_fr.json")
+TEXTES = os.path.join(ROOT, "src", "fiches")  # un fichier JSON par lot d'éléments
 
 EV_KJ = 96.4853  # 1 eV par atome = 96,485 kJ/mol
 
@@ -150,7 +150,17 @@ def main():
         modes.setdefault(r.isotope_id, []).append(r["mode"])
     from mendeleev import element
 
-    textes = json.load(open(TEXTES, encoding="utf-8")) if os.path.exists(TEXTES) else {}
+    textes = {}
+    for f in sorted(os.listdir(TEXTES)):
+        if f.endswith(".json"):
+            for k, v in json.load(open(os.path.join(TEXTES, f), encoding="utf-8")).items():
+                textes[k] = {
+                    "description": v.get("d"), "usages": v.get("u"),
+                    "parts": [{"label": a, "pct": b} for a, b in v.get("p", [])] or None,
+                    "partsSource": v.get("src"), "etymologie": v.get("e"), "symbolique": v.get("sym"),
+                    "decouvreurs": v.get("dec"), "histoire": v.get("h"), "sgh": v.get("sgh") or None,
+                }
+                textes[k] = {a: b for a, b in textes[k].items() if b is not None}
     out = []
     for z in range(1, 119):
         r = E.loc[z]

@@ -1,0 +1,36 @@
+{
+ "64": {
+  "d": "Métal des terres rares gris argenté, souple et facile à travailler. À l'air humide il se ternit vite ; il réagit lentement avec l'eau et se dissout dans les acides dilués. C'est l'élément naturel qui capture le mieux les neutrons, et il devient magnétique comme le fer juste sous la température ambiante (vers 20 °C).",
+  "u": "Surtout connu en médecine : ses complexes servent de produit de contraste pour l'IRM. On le retrouve aussi dans les barres de contrôle et certains combustibles des réacteurs nucléaires, dans les aimants et l'électronique (grenats pour les hyperfréquences, anciens disques magnéto-optiques), dans des alliages avec le fer ou le chrome, en radiographie aux neutrons et dans les réfrigérateurs magnétiques expérimentaux.",
+  "p": [
+   [
+    "Imagerie médicale (IRM)",
+    42
+   ],
+   [
+    "Aimants et électronique",
+    21
+   ],
+   [
+    "Nucléaire",
+    18
+   ],
+   [
+    "Alliages et froid magnétique",
+    11
+   ],
+   [
+    "Autres (luminophores, lasers…)",
+    8
+   ]
+  ],
+  "src": "Répartition indicative du marché, 2025-2026",
+  "e": "Tiré de la gadolinite, un minéral lui-même nommé en l'honneur du chimiste finlandais Johan Gadolin.",
+  "sym": "personnalité",
+  "dec": "Jean Charles Galissard de Marignac (oxyde, 1880) ; Paul-Émile Lecoq de Boisbaudran, qui lui donne son nom (1886)",
+  "h": "En 1880, à Genève, Jean Charles Galissard de Marignac repère dans le spectre de terres rares extraites de la samarskite et de la gadolinite des raies qu'aucun élément connu n'explique : il y a là un oxyde nouveau. Six ans plus tard, Paul-Émile Lecoq de Boisbaudran en obtient une forme pure et propose le nom de gadolinium, avec l'accord de Marignac. Le métal lui-même ne sera isolé qu'en 1935, par le Français Félix Trombe.",
+  "sgh": [
+   "SGH02"
+  ]
+ }
+}
