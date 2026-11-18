@@ -79,22 +79,25 @@ struct TopBar: View {
                     .frame(maxWidth: .infinity)
                     .background(model.room == r.id ? Color.copper : panelBG, in: RoundedRectangle(cornerRadius: 10))
                     .foregroundStyle(.white)
+                    .animation(.snappy, value: model.room)
                 }
+                .buttonStyle(PressableStyle())
             }
             Menu {
                 Button { model.setMode(.guided) } label: { Label("Visite guidée", systemImage: "figure.walk.motion") }
                 Button { model.setMode(.free) } label: { Label("Visite libre", systemImage: "gamecontroller") }
             } label: {
                 Image(systemName: model.mode == .free ? "gamecontroller.fill" : "figure.walk.motion")
+                    .contentTransition(.symbolEffect(.replace))
                     .frame(width: 38, height: 38).background(panelBG, in: RoundedRectangle(cornerRadius: 10))
             }
             .accessibilityLabel("Mode de visite")
             Button { model.showPlan = true } label: {
-                Image(systemName: "map").frame(width: 38, height: 38).background(panelBG, in: RoundedRectangle(cornerRadius: 10))
+                Image(systemName: "map").symbolEffect(.bounce, value: model.showPlan).frame(width: 38, height: 38).background(panelBG, in: RoundedRectangle(cornerRadius: 10))
             }
             .accessibilityLabel("Plan")
             Button { model.showTests = true } label: {
-                Image(systemName: "checklist").frame(width: 38, height: 38).background(panelBG, in: RoundedRectangle(cornerRadius: 10))
+                Image(systemName: "checklist").symbolEffect(.bounce, value: model.showTests).frame(width: 38, height: 38).background(panelBG, in: RoundedRectangle(cornerRadius: 10))
             }
             .accessibilityLabel("Tests")
         }
@@ -113,13 +116,17 @@ struct NavBar: View {
                 VStack(spacing: 3) {
                     HStack(spacing: 4) {
                         ForEach(0..<3, id: \.self) { k in
-                            Circle().fill(k <= model.lvl && model.mode == .guided ? Color.copper : Color.white.opacity(0.25))
-                                .frame(width: 6, height: 6)
+                            let on = k <= model.lvl && model.mode == .guided
+                            Capsule().fill(on ? Color.copper : Color.white.opacity(0.25))
+                                .frame(width: on && k == model.lvl ? 16 : 6, height: 6)
                         }
                     }
                     Text(model.mode == .free ? "Visite libre" : PalaceModel.zoomNames[model.lvl])
                         .font(.caption.weight(.semibold)).lineLimit(1)
+                        .contentTransition(.interpolate)
                 }
+                .animation(.spring(duration: 0.4, bounce: 0.4), value: model.lvl)
+                .animation(.snappy, value: model.mode)
                 .frame(maxWidth: .infinity, minHeight: 44)
                 .background(panelBG, in: RoundedRectangle(cornerRadius: 12))
             }
@@ -127,12 +134,15 @@ struct NavBar: View {
             navButton("chevron.right", "Élément suivant") { model.stepN(1) }
             navButton("chevron.right.2", "Dizaine suivante") { model.stepD(1) }
             Button { model.toggleChain() } label: {
-                Image(systemName: "link")
+                Image(systemName: "link").symbolEffect(.bounce, value: model.showChain)
                     .frame(width: 44, height: 44)
                     .background(model.showChain ? Color.copper : panelBG, in: RoundedRectangle(cornerRadius: 12))
             }
             .accessibilityLabel(model.showChain ? "Masquer la chaîne" : "Afficher la chaîne")
         }
+        .buttonStyle(PressableStyle())
+        .sensoryFeedback(.selection, trigger: model.n)
+        .sensoryFeedback(.impact(weight: .light), trigger: model.lvl)
         .foregroundStyle(.white)
         .padding(.horizontal, 10).padding(.vertical, 6)
     }

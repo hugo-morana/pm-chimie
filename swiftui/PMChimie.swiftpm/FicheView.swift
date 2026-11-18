@@ -11,6 +11,7 @@ struct Tile: View {
         VStack(spacing: 0) {
             Text(masked ? "?" : "\(n)")
                 .font(.system(size: size * 0.36, weight: .heavy).monospacedDigit())
+                .contentTransition(.numericText(value: Double(n)))
             Text(masked ? "?" : PM.elements[n].s)
                 .font(.system(size: size * 0.26, weight: .semibold))
         }
@@ -47,6 +48,7 @@ struct FicheView: View {
     @Environment(PalaceModel.self) private var model
     @State private var lightbox: LightboxItem? = nil
     @State private var detail: LightboxItem? = nil
+    @Namespace private var zoomNS
 
     var body: some View {
         let T = model.testLook
@@ -74,7 +76,7 @@ struct FicheView: View {
         .padding(.horizontal, 14).padding(.bottom, 10).padding(.top, 4)
         .foregroundStyle(.white)
         .background(panelBG.ignoresSafeArea(edges: .bottom))
-        .sheet(item: $detail) { item in ElementDetailView(n: item.n) }
+        .sheet(item: $detail) { item in ElementDetailView(n: item.n).zoomDestination(item.n, in: zoomNS) }
         .fullScreenCover(item: $lightbox) { item in
             Lightbox(n: item.n, masked: (T?.mask ?? false) && item.n == n) { lightbox = nil }
         }
@@ -98,6 +100,7 @@ struct FicheView: View {
             Button { if !hidden { lightbox = LightboxItem(n: n) } } label: { Thumb(n: n, hidden: hidden) }
                 .accessibilityLabel("Agrandir l'image")
         }
+        .animation(.snappy(duration: 0.35), value: n)
     }
 
     @ViewBuilder
@@ -108,12 +111,15 @@ struct FicheView: View {
             if PropsStore.get(n) != nil {
                 Button { detail = LightboxItem(n: n) } label: {
                     Label("Fiche complète : propriétés, usages, isotopes", systemImage: "chart.pie.fill")
+                        .symbolEffect(.bounce, value: n)
                         .font(.subheadline.weight(.semibold))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 8)
                         .background(Color.copper.opacity(0.85), in: RoundedRectangle(cornerRadius: 10))
+                        .shimmer(period: 4, cornerRadius: 10)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(PressableStyle())
+                .zoomSource(n, in: zoomNS)
             }
             if n < PM.maxN {
                 linkRow(img: n + 1, label: "⟶ vers \(n + 1) · \(PM.elements[n + 1].nom)", text: E.lien)

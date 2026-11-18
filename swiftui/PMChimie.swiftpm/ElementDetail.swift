@@ -203,7 +203,13 @@ struct ElementDetailView: View {
                     Text("Pas de fiche pour cet emplacement.").foregroundStyle(.secondary).padding(40)
                 }
             }
-            .background(Color(hex: 0x15171a).ignoresSafeArea())
+            .background {
+                ZStack {
+                    Color(hex: 0x15171a)
+                    LivingBackground(accent: familleColor(PropsStore.get(n)?.famille)).opacity(0.55)
+                }
+                .ignoresSafeArea()
+            }
             .navigationTitle("\(E.nom)")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("OK") { dismiss() } } }
@@ -228,8 +234,10 @@ struct Card<Content: View>: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(panelBG, in: RoundedRectangle(cornerRadius: 16))
+        .background(.ultraThinMaterial.opacity(0.6), in: RoundedRectangle(cornerRadius: 16))
+        .background(panelBG.opacity(0.75), in: RoundedRectangle(cornerRadius: 16))
         .overlay(RoundedRectangle(cornerRadius: 16).stroke(lineColor))
+        .scrollReveal()
     }
 }
 
@@ -247,10 +255,17 @@ struct ValueRow: View {
 
 // MARK: - En-tête
 
+struct TileMotion {
+    var scale = 1.0
+    var turn = 0.0
+    var glow = 0.5
+}
+
 struct DetailHeader: View {
     let E: Element
     let P: Props
     let accent: Color
+    @State private var trigger = false
     var body: some View {
         HStack(spacing: 16) {
             VStack(alignment: .leading, spacing: 0) {
@@ -268,9 +283,35 @@ struct DetailHeader: View {
             .foregroundStyle(.black)
             .background(LinearGradient(colors: [accent, accent.opacity(0.65)], startPoint: .topLeading, endPoint: .bottomTrailing),
                         in: RoundedRectangle(cornerRadius: 16))
-            .shadow(color: accent.opacity(0.5), radius: 14)
+            .shimmer()
+            .keyframeAnimator(initialValue: TileMotion(), trigger: trigger) { content, v in
+                content
+                    .scaleEffect(v.scale)
+                    .rotation3DEffect(.degrees(v.turn), axis: (x: 0, y: 1, z: 0), perspective: 0.6)
+                    .shadow(color: accent.opacity(v.glow), radius: 18)
+            } keyframes: { _ in
+                KeyframeTrack(\.scale) {
+                    MoveKeyframe(0.5)
+                    SpringKeyframe(1.12, duration: 0.35, spring: .bouncy)
+                    SpringKeyframe(1.0, duration: 0.35)
+                }
+                KeyframeTrack(\.turn) {
+                    MoveKeyframe(-200)
+                    CubicKeyframe(15, duration: 0.5)
+                    SpringKeyframe(0, duration: 0.45, spring: .bouncy)
+                }
+                KeyframeTrack(\.glow) {
+                    MoveKeyframe(0)
+                    LinearKeyframe(1, duration: 0.4)
+                    LinearKeyframe(0.5, duration: 0.6)
+                }
+            }
+            .onTapGesture { trigger.toggle() }
+            .onAppear { trigger.toggle() }
+            .sensoryFeedback(.impact(weight: .medium), trigger: trigger)
 
             VStack(alignment: .leading, spacing: 6) {
+                RevealText(text: E.nom, font: .title2.bold())
                 Text(P.famille ?? "Famille inconnue").font(.headline).foregroundStyle(accent)
                 Text(P.config ?? "").font(.subheadline.monospaced())
                 HStack(spacing: 6) {
@@ -308,20 +349,13 @@ struct GlanceGrid: View {
             ("cube", "Cristal", P.structure ?? "—"),
         ]
         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 8) {
-            ForEach(items, id: \.1) { it in
-                VStack(spacing: 6) {
-                    Image(systemName: it.0).font(.title2).foregroundStyle(accent).frame(height: 28)
-                    Text(it.1).font(.caption2).foregroundStyle(.secondary)
-                    Text(it.2).font(.caption.weight(.semibold)).multilineTextAlignment(.center)
-                        .lineLimit(2).minimumScaleFactor(0.7)
-                }
-                .frame(maxWidth: .infinity, minHeight: 96)
-                .padding(6)
-                .background(panelBG, in: RoundedRectangle(cornerRadius: 14))
-                .overlay(RoundedRectangle(cornerRadius: 14).stroke(lineColor))
+            ForEach(Array(items.enumerated()), id: \.element.1) { i, it in
+                GlanceTile(icon: it.0, title: it.1, value: it.2, accent: accent, index: i,
+                           pulse: it.1 == "Stabilité" && (P.radioactif ?? false))
             }
         }
     }
+    var etatIconName: String { etatIcon }
     private var etatIcon: String {
         switch P.etat {
         case "gaz": return "wind"
@@ -332,12 +366,53 @@ struct GlanceGrid: View {
     }
 }
 
+struct GlanceTile: View {
+    let icon: String
+    let title: String
+    let value: String
+    let accent: Color
+    let index: Int
+    var pulse = false
+    @State private var bounce = false
+    @State private var visible = false
+
+    var body: some View {
+        VStack(spacing: 6) {
+            Group {
+                if pulse {
+                    Image(systemName: icon).symbolEffect(.pulse, options: .repeating)
+                } else {
+                    Image(systemName: icon).symbolEffect(.bounce, value: bounce)
+                }
+            }
+            .font(.title2).foregroundStyle(accent).frame(height: 28)
+            Text(title).font(.caption2).foregroundStyle(.secondary)
+            Text(value).font(.caption.weight(.semibold)).multilineTextAlignment(.center)
+                .lineLimit(2).minimumScaleFactor(0.7)
+        }
+        .frame(maxWidth: .infinity, minHeight: 96)
+        .padding(6)
+        .background(panelBG.opacity(0.8), in: RoundedRectangle(cornerRadius: 14))
+        .overlay(RoundedRectangle(cornerRadius: 14).stroke(lineColor))
+        .opacity(visible ? 1 : 0)
+        .offset(y: visible ? 0 : 18)
+        .scaleEffect(visible ? 1 : 0.85)
+        .onAppear {
+            withAnimation(.spring(duration: 0.5, bounce: 0.4).delay(0.08 * Double(index) + 0.3)) { visible = true }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.08 * Double(index) + 0.6) { bounce.toggle() }
+        }
+        .onTapGesture { bounce.toggle() }
+    }
+}
+
 // MARK: - Textes et camembert des usages
 
 struct TextCards: View {
     let t: FicheTexte
     let accent: Color
     @State private var selected: String? = nil
+    @State private var angleSel: Double? = nil
+    @State private var revealed = 0
 
     var body: some View {
         if let d = t.description {
@@ -360,7 +435,7 @@ struct TextCards: View {
         let top = parts.max { $0.pct < $1.pct }
         let shown = parts.first { $0.label == selected } ?? top
         Chart(Array(parts.enumerated()), id: \.element.label) { i, p in
-            SectorMark(angle: .value("Part", p.pct),
+            SectorMark(angle: .value("Part", i < revealed ? p.pct : 0.0001),
                        innerRadius: .ratio(0.58),
                        outerRadius: .ratio(p.label == shown?.label ? 1.0 : 0.92),
                        angularInset: 2)
@@ -369,12 +444,31 @@ struct TextCards: View {
                 .opacity(p.label == shown?.label ? 1 : 0.75)
         }
         .chartLegend(.hidden)
+        .chartAngleSelection(value: $angleSel)
+        .onChange(of: angleSel) { _, v in
+            guard let v else { return }
+            var acc = 0.0
+            for p in parts {
+                acc += p.pct
+                if v <= acc { selected = p.label; break }
+            }
+        }
+        .sensoryFeedback(.selection, trigger: selected)
+        .onAppear {
+            revealed = 0
+            for k in 1...parts.count {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25 + 0.12 * Double(k)) {
+                    withAnimation(.spring(duration: 0.6, bounce: 0.3)) { revealed = k }
+                }
+            }
+        }
         .chartBackground { proxy in
             GeometryReader { geo in
                 if let frame = proxy.plotFrame {
                     let r = geo[frame]
                     VStack(spacing: 2) {
                         Text("\(Int(shown?.pct ?? 0)) %").font(.title.bold().monospacedDigit())
+                            .contentTransition(.numericText(value: shown?.pct ?? 0))
                         Text(shown?.label ?? "").font(.caption2).multilineTextAlignment(.center)
                             .foregroundStyle(.secondary).frame(width: r.width * 0.5)
                     }
@@ -387,7 +481,7 @@ struct TextCards: View {
 
         VStack(alignment: .leading, spacing: 6) {
             ForEach(Array(parts.enumerated()), id: \.element.label) { i, p in
-                Button { selected = p.label } label: {
+                Button { withAnimation(.snappy) { selected = p.label } } label: {
                     HStack(spacing: 8) {
                         Circle().fill(chartPalette[i % chartPalette.count]).frame(width: 10, height: 10)
                         Text(p.label).font(.caption).foregroundStyle(.primary)
@@ -457,9 +551,10 @@ struct AtomCard: View {
 struct IonisationCard: View {
     let ei: [Double]
     let accent: Color
+    @State private var grown = false
     var body: some View {
         Card(title: "Énergies d'ionisation", icon: "bolt.fill", accent: accent) {
-            Chart(Array(ei.enumerated()), id: \.offset) { i, v in
+            Chart(Array(ei.map { grown ? $0 : 0 }.enumerated()), id: \.offset) { i, v in
                 AreaMark(x: .value("Ionisation", i + 1), y: .value("kJ/mol", v))
                     .interpolationMethod(.catmullRom)
                     .foregroundStyle(LinearGradient(colors: [accent.opacity(0.45), accent.opacity(0.02)], startPoint: .top, endPoint: .bottom))
@@ -477,7 +572,9 @@ struct IonisationCard: View {
                 }
             }
             .chartYAxisLabel("kJ/mol")
+            .chartYScale(domain: 0...((ei.max() ?? 1) * 1.1))
             .frame(height: 190)
+            .onAppear { withAnimation(.spring(duration: 1.2, bounce: 0.25).delay(0.2)) { grown = true } }
             Text("Énergie à fournir pour arracher les électrons un par un. Un saut brutal signale qu'on attaque une couche plus profonde.")
                 .font(.caption).foregroundStyle(.secondary)
             ValueRow(label: "1re ionisation", value: Fmt.unit(ei.first, "kJ/mol", 4))
@@ -659,31 +756,38 @@ struct IsotopesCard: View {
     let P: Props
     let symbol: String
     let accent: Color
+    @State private var grown = false
     var body: some View {
         let isos = P.isotopes ?? []
         let natural = isos.filter { ($0.ab ?? 0) > 0 }
         let counts: [(String, Int)] = [("Stables", P.nStables ?? 0), ("β⁺ / CE", P.nBplus ?? 0),
                                        ("β⁻", P.nBmoins ?? 0), ("α", P.nAlpha ?? 0)]
         Card(title: "Isotopes", icon: "circle.hexagongrid", accent: accent) {
-            Text("\(P.nIso ?? 0) isotopes connus").font(.subheadline.weight(.semibold))
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                CountUp(value: P.nIso ?? 0)
+                Text("isotopes connus").font(.subheadline.weight(.semibold))
+            }
             Chart(counts, id: \.0) { l, v in
-                BarMark(x: .value("Type", l), y: .value("Nombre", v))
+                BarMark(x: .value("Type", l), y: .value("Nombre", grown ? v : 0))
                     .foregroundStyle(l == "Stables" ? Color(hex: 0x38d9a9) : accent)
                     .cornerRadius(5)
                     .annotation(position: .top) { Text("\(v)").font(.caption2.bold()) }
             }
             .chartYAxis(.hidden)
+            .chartYScale(domain: 0...Double(max(1, counts.map(\.1).max() ?? 1)) * 1.25)
             .frame(height: 140)
+            .onAppear { withAnimation(.spring(duration: 0.9, bounce: 0.35).delay(0.15)) { grown = true } }
 
             if !natural.isEmpty {
                 Text("Abondance naturelle").font(.subheadline.weight(.semibold)).padding(.top, 4)
                 Chart(natural, id: \.a) { iso in
-                    BarMark(x: .value("Isotope", "\(iso.a)"), y: .value("%", iso.ab ?? 0))
+                    BarMark(x: .value("Isotope", "\(iso.a)"), y: .value("%", grown ? (iso.ab ?? 0) : 0))
                         .foregroundStyle(LinearGradient(colors: [accent, accent.opacity(0.4)], startPoint: .top, endPoint: .bottom))
                         .cornerRadius(5)
                         .annotation(position: .top) { Text(Fmt.num(iso.ab, 3) + " %").font(.system(size: 9).monospacedDigit()) }
                 }
                 .chartYAxis(.hidden)
+                .chartYScale(domain: 0...((natural.compactMap(\.ab).max() ?? 1) * 1.2))
                 .frame(height: 170)
             }
 
