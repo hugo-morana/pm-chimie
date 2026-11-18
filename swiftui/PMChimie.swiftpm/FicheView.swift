@@ -76,6 +76,9 @@ struct FicheView: View {
         .padding(.horizontal, 14).padding(.bottom, 10).padding(.top, 4)
         .foregroundStyle(.white)
         .background(panelBG.ignoresSafeArea(edges: .bottom))
+        .onChange(of: model.detailRequest) { _, r in
+            if let r { detail = LightboxItem(n: r); model.detailRequest = nil }
+        }
         .sheet(item: $detail) { item in ElementDetailView(n: item.n).zoomDestination(item.n, in: zoomNS) }
         .fullScreenCover(item: $lightbox) { item in
             Lightbox(n: item.n, masked: (T?.mask ?? false) && item.n == n) { lightbox = nil }

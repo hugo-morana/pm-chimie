@@ -28,6 +28,7 @@ final class PalaceModel {
     var showTests = false
     var showPlan = false
     var ficheCollapsed = false
+    var detailRequest: Int? = nil   // ouvre la fiche complète de cet élément (mode capture)
 
     let srs = SRSStore()
     @ObservationIgnored let scene = SceneController()
@@ -57,6 +58,35 @@ final class PalaceModel {
         scene.setOverviewHidden(false)
         scene.enterFree(at: Palace.rooms[0].origin + [0, 1.7, 6.2], yaw: 0)
         refreshScene()
+        applyCaptureIfNeeded()
+    }
+
+    /// Mode capture d'écran (variable d'environnement PM_CAPTURE, utilisée par le workflow « Captures »).
+    /// Valeurs : libre, alchimie, guide:<niveau>:<n>, fiche:<n>, tests, plan.
+    func applyCaptureIfNeeded() {
+        guard let cap = ProcessInfo.processInfo.environment["PM_CAPTURE"] else { return }
+        let parts = cap.split(separator: ":").map(String.init)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self else { return }
+            switch parts.first {
+            case "alchimie":
+                self.goRoom(1)
+            case "guide" where parts.count == 3:
+                self.lvl = Int(parts[1]) ?? 2
+                self.go(Int(parts[2]) ?? 1, instant: true)
+            case "fiche" where parts.count == 2:
+                let k = Int(parts[1]) ?? 1
+                self.lvl = 2
+                self.go(k, instant: true)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { self.detailRequest = k }
+            case "tests":
+                self.showTests = true
+            case "plan":
+                self.showPlan = true
+            default:
+                break
+            }
+        }
     }
 
     func refreshScene() {

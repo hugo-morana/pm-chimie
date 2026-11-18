@@ -1,0 +1,95 @@
+name: Captures App Store
+
+# Prend les captures d'écran pour l'App Store dans des simulateurs
+# iPhone 6,9 pouces et iPad 13 pouces, puis les dépose sur la branche « captures ».
+on:
+  workflow_dispatch:
+  push:
+    branches: [appstore]
+    paths:
+      - ".github/workflows/captures.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  captures:
+    runs-on: macos-15
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Xcode
+        run: |
+          sudo xcode-select -s "$(ls -d /Applications/Xcode_*.app | grep -v -i beta | sort -V | tail -1)"
+          xcodebuild -version
+          xcrun simctl list runtimes
+
+      - name: Compilation pour le simulateur
+        working-directory: swiftui/PMChimie.swiftpm
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -scheme "PM Chimie" \
+            -destination "generic/platform=iOS Simulator" \
+            -configuration Release \
+            -derivedDataPath "$RUNNER_TEMP/dd" \
+            CODE_SIGNING_ALLOWED=NO 2>&1 | tail -20
+
+      - name: Captures
+        run: |
+          set -x
+          APP=$(find "$RUNNER_TEMP/dd/Build/Products" -maxdepth 2 -name "*.app" -path "*iphonesimulator*" | head -1)
+          BUNDLE=$(/usr/libexec/PlistBuddy -c "Print CFBundleIdentifier" "$APP/Info.plist")
+          RUNTIME=$(xcrun simctl list runtimes -j | python3 -c "import sys,json; r=[x for x in json.load(sys.stdin)['runtimes'] if x['platform']=='iOS' and x['isAvailable']]; print(r[-1]['identifier'])")
+          TYPES=$(xcrun simctl list devicetypes -j)
+          pick() { echo "$TYPES" | python3 -c "
+          import sys,json,re
+          names=[d['name'] for d in json.load(sys.stdin)['devicetypes']]
+          for pat in sys.argv[1:]:
+              m=[n for n in names if re.fullmatch(pat,n)]
+              if m: print(sorted(m)[-1]); break
+          " "$@"; }
+          IPHONE=$(pick "iPhone 1[6-9] Pro Max" "iPhone 1[5-9] Plus")
+          IPAD=$(pick "iPad Pro 13-inch \(M[0-9]\).*" "iPad Pro \(12.9-inch\).*")
+          echo "iPhone : $IPHONE / iPad : $IPAD / runtime : $RUNTIME"
+          OUT="$RUNNER_TEMP/captures"; mkdir -p "$OUT"
+          SCENES="1-visite-guidee:guide:2:26 2-fiche-complete-or:fiche:79 3-fiche-complete-uranium:fiche:92 4-panneau:guide:1:23 5-visite-libre:libre 6-alchimie:alchimie 7-tests:tests 8-plan:plan"
+          for DEV in "iphone|$IPHONE" "ipad|$IPAD"; do
+            KIND=${DEV%%|*}; TYPE=${DEV#*|}
+            [ -z "$TYPE" ] && continue
+            UDID=$(xcrun simctl create "capture-$KIND" "$TYPE" "$RUNTIME")
+            xcrun simctl boot "$UDID"
+            xcrun simctl bootstatus "$UDID" -b
+            xcrun simctl status_bar "$UDID" override --time "9:41" --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --cellularBars 4 --batteryState charged --batteryLevel 100 || true
+            xcrun simctl ui "$UDID" appearance dark || true
+            xcrun simctl install "$UDID" "$APP"
+            # premier lancement à vide (compilation des shaders)
+            xcrun simctl launch "$UDID" "$BUNDLE"; sleep 25; xcrun simctl terminate "$UDID" "$BUNDLE" || true
+            for S in $SCENES; do
+              NAME=${S%%:*}; CAP=${S#*:}
+              SIMCTL_CHILD_PM_CAPTURE="$CAP" xcrun simctl launch "$UDID" "$BUNDLE"
+              sleep 18
+              xcrun simctl io "$UDID" screenshot --type=png "$OUT/$KIND-$NAME.png"
+              xcrun simctl terminate "$UDID" "$BUNDLE" || true
+              sleep 2
+            done
+            xcrun simctl shutdown "$UDID" || true
+          done
+          ls -la "$OUT"
+          for f in "$OUT"/*.png; do sips -g pixelWidth -g pixelHeight "$f" | tail -2 | tr '\n' ' '; echo " $(basename "$f")"; done > "$OUT/tailles.txt"
+          cat "$OUT/tailles.txt"
+
+      - name: Dépôt sur la branche captures
+        if: always()
+        run: |
+          OUT="$RUNNER_TEMP/captures"; mkdir -p "$OUT"
+          echo "commit: $GITHUB_SHA" > "$OUT/LISEZMOI.txt"
+          cd "$OUT"
+          git init -q
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git checkout -q -b captures
+          git add .
+          git commit -q -m "Captures App Store $GITHUB_SHA"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" captures
