@@ -29,15 +29,15 @@
   "nom": "Lithium",
   "img": "Pile",
   "deco": "Pile au lithium",
-  "lien": "La pile envoie une décharge qui hérisse les cheveux blonds de Berylia."
+  "lien": "La pile envoie une décharge qui fait étinceler l'émeraude taillée."
  },
  {
   "n": 4,
   "s": "Be",
   "nom": "Béryllium",
-  "img": "Berylia, copine blonde",
-  "deco": "« Berylia » ≈ Béryllium",
-  "lien": "Berylia, cheveux dressés, grimpe en courant l'échelle du plongeoir."
+  "img": "Émeraude taillée",
+  "deco": "L'émeraude est une variété de béryl",
+  "lien": "L'émeraude roule sur le plongeoir et le fait rebondir comme un tremplin."
  },
  {
   "n": 5,
@@ -221,15 +221,15 @@
   "nom": "Cobalt",
   "img": "Cobra",
   "deco": "« Co-balt »",
-  "lien": "Le cobra mord la basket Nike et s'enroule autour d'elle."
+  "lien": "Le cobra mord la basket blanche et s'enroule autour d'elle."
  },
  {
   "n": 28,
   "s": "Ni",
   "nom": "Nickel",
-  "img": "Basket Nike",
-  "deco": "« Ni-kel »",
-  "lien": "La basket Nike shoote dans les tuyaux en cuivre, qui s'entrechoquent comme des cloches."
+  "img": "Basket blanche, nickel",
+  "deco": "« Nickel ! » ≈ Nickel",
+  "lien": "La basket shoote dans les tuyaux en cuivre, qui s'entrechoquent comme des cloches."
  },
  {
   "n": 29,
@@ -261,23 +261,23 @@
   "nom": "Germanium",
   "img": "Drapeau allemand",
   "deco": "Germanie",
-  "lien": "Le drapeau allemand s'enroule autour des deux rappeurs d'Arsenik."
+  "lien": "Le drapeau allemand s'enroule autour du flacon de poison, qui se met à fumer."
  },
  {
   "n": 33,
   "s": "As",
   "nom": "Arsenic",
-  "img": "Deux rappeurs",
-  "deco": "Le groupe Arsenik",
-  "lien": "Les rappeurs tendent leur micro à Selena, qui se met à chanter."
+  "img": "Flacon de poison",
+  "deco": "L'arsenic, poison célèbre",
+  "lien": "Le flacon se renverse et son poison ronge le croissant de lune, qui se fend."
  },
  {
   "n": 34,
   "s": "Se",
   "nom": "Sélénium",
-  "img": "Selena, jeune femme brune",
-  "deco": "« Selena » ≈ Sélénium",
-  "lien": "Selena attrape le broc et le renverse."
+  "img": "Croissant de lune",
+  "deco": "Séléné, la Lune ≈ Sélénium",
+  "lien": "Le croissant de lune bascule et renverse le broc."
  },
  {
   "n": 35,
@@ -285,15 +285,15 @@
   "nom": "Brome",
   "img": "Broc d'eau",
   "deco": "« Broc » ≈ Brome",
-  "lien": "L'eau du broc arrose les cristaux de kryptonite, qui s'illuminent en vert."
+  "lien": "L'eau du broc dévale l'escalier de la crypte, qui s'illumine."
  },
  {
   "n": 36,
   "s": "Kr",
   "nom": "Krypton",
-  "img": "Cristaux de kryptonite",
-  "deco": "Kryptonite",
-  "lien": "La kryptonite éclate et projette un rubis."
+  "img": "Crypte éclairée de bougies",
+  "deco": "« Crypte » ≈ Krypton",
+  "lien": "Au fond de la crypte, un coffre s'ouvre et projette un rubis."
  },
  {
   "n": 37,
@@ -325,15 +325,15 @@
   "nom": "Zirconium",
   "img": "Z et chapiteau de cirque",
   "deco": "« Z-circ-onium »",
-  "lien": "Le Z du chapiteau bascule, et Niobe l'esquive d'un saut au ralenti."
+  "lien": "Le Z du chapiteau bascule et frappe la statue de Niobé, qui se met à pleurer."
  },
  {
   "n": 41,
   "s": "Nb",
   "nom": "Niobium",
-  "img": "Niobe (Matrix)",
-  "deco": "« Niobe » ≈ Niobium",
-  "lien": "Niobe atterrit sur le dos de la baleine, qui s'arrache de son socle."
+  "img": "Niobé, statue de pierre qui pleure",
+  "deco": "Niobé, héroïne de la mythologie grecque ≈ Niobium",
+  "lien": "Les larmes de Niobé forment une mer d'où surgit la baleine, qui s'arrache de son socle."
  },
  {
   "n": 42,
@@ -349,15 +349,15 @@
   "nom": "Technétium",
   "img": "Engrenages",
   "deco": "Technique",
-  "lien": "Les engrenages happent la statuette en rut, qui grince en tournant avec eux."
+  "lien": "Les engrenages happent la poupée russe, qui tourne en grinçant."
  },
  {
   "n": 44,
   "s": "Ru",
   "nom": "Ruthénium",
-  "img": "Statuette en rut",
-  "deco": "« Ruth-énium » ≈ en rut",
-  "lien": "La statuette en rut charge le Colosse de Rhodes, qui vacille dans la mer."
+  "img": "Poupée russe",
+  "deco": "Ruthénie, ancien nom de la Russie ≈ Ruthénium",
+  "lien": "Les poupées russes s'ouvrent et dégringolent jusqu'au Colosse de Rhodes, qui vacille dans la mer."
  },
  {
   "n": 45,
@@ -389,15 +389,15 @@
   "nom": "Cadmium",
   "img": "Cadenas sur un savon",
   "deco": "« Cad-mium »",
-  "lien": "Le cadenas se referme sur le turban du Sikh."
+  "lien": "Le cadenas se referme sur la trompe de l'éléphant d'Inde."
  },
  {
   "n": 49,
   "s": "In",
   "nom": "Indium",
-  "img": "Sikh au turban",
-  "deco": "Inde",
-  "lien": "Le Sikh déroule son turban jusqu'au sol et appuie sur l'interrupteur, et tout s'éteint."
+  "img": "Éléphant d'Inde",
+  "deco": "« Inde » ≈ Indium",
+  "lien": "L'éléphant donne un coup de trompe sur l'interrupteur, et tout s'éteint."
  },
  {
   "n": 50,
@@ -429,15 +429,15 @@
   "nom": "Iode",
   "img": "Gros sel",
   "deco": "Sel iodé",
-  "lien": "Le gros sel est projeté dans les yeux de Xena, qui dégaine son épée."
+  "lien": "Le gros sel est projeté sur le petit extraterrestre, qui agite ses antennes."
  },
  {
   "n": 54,
   "s": "Xe",
   "nom": "Xénon",
-  "img": "Xena la guerrière",
-  "deco": "« Xena » ≈ Xénon",
-  "lien": "Xena tranche la couronne de laurier en deux."
+  "img": "Petit extraterrestre vert",
+  "deco": "Du grec xenos, l'étranger ≈ Xénon",
+  "lien": "L'extraterrestre fait léviter la couronne de laurier et la brise en deux."
  },
  {
   "n": 55,
@@ -445,15 +445,15 @@
   "nom": "Césium",
   "img": "Couronne de laurier",
   "deco": "César",
-  "lien": "La couronne de laurier retombe sur la tête de Barry, qui se met à chanter."
+  "lien": "La couronne de laurier retombe sur la barrière rouge et blanche, qui se lève."
  },
  {
   "n": 56,
   "s": "Ba",
   "nom": "Baryum",
-  "img": "Barry, chanteur à lunettes noires",
-  "deco": "« Barry » ≈ Baryum",
-  "lien": "La voix grave de Barry fait vibrer la lanterne, qui s'allume."
+  "img": "Barrière rouge et blanche",
+  "deco": "« Barrière » ≈ Baryum",
+  "lien": "La barrière se relève d'un coup et heurte la lanterne, qui s'allume."
  },
  {
   "n": 57,
@@ -477,15 +477,15 @@
   "nom": "Praséodyme",
   "img": "Réchaud",
   "deco": "« Brasero » ≈ Praséodyme",
-  "lien": "Le feu du réchaud court au sol jusqu'au panneau violet, et Neo l'esquive en se cambrant en arrière."
+  "lien": "Le feu du réchaud court au sol jusqu'au panneau violet et réveille le nouveau-né au diadème."
  },
  {
   "n": 60,
   "s": "Nd",
   "nom": "Néodyme",
-  "img": "Neo (Matrix)",
-  "deco": "« Neo-dyme »",
-  "lien": "Neo, d'un coup de pied au ralenti, fait vaciller la torche de Prométhée."
+  "img": "Nouveau-né au diadème",
+  "deco": "« Néo » (nouveau) + diadème ≈ Néodyme",
+  "lien": "Le nouveau-né agite son hochet et fait vaciller la torche de Prométhée."
  },
  {
   "n": 61,
@@ -509,15 +509,15 @@
   "nom": "Europium",
   "img": "Drapeau européen",
   "deco": "Europe",
-  "lien": "Le drapeau européen s'enroule autour des skis de Gad Elmaleh, qui chute."
+  "lien": "Le drapeau européen s'enroule autour des skis du skieur, qui chute dans la gadoue."
  },
  {
   "n": 64,
   "s": "Gd",
   "nom": "Gadolinium",
-  "img": "Gad Elmaleh à skis avec un bidon de gasoline",
-  "deco": "« Gad » + gasoline ; les skis = 64 (objet MemoHugoDate)",
-  "lien": "Gad Elmaleh vide son bidon de gasoline sur le sac de terre, qui s'imbibe et s'affaisse."
+  "img": "Skieur dans la gadoue avec un bidon de gasoline",
+  "deco": "« Gadoue » + gasoline ≈ Gadolinium ; les skis = 64 (objet MemoHugoDate)",
+  "lien": "Le skieur vide son bidon de gasoline sur le sac de terre, qui s'imbibe et s'affaisse."
  },
  {
   "n": 65,
@@ -573,15 +573,15 @@
   "nom": "Lutécium",
   "img": "Luth",
   "deco": "« Luth-écium »",
-  "lien": "Le luth joue une mélodie qui fait danser ALF."
+  "lien": "Le luth joue une mélodie qui fait danser la hache de bûcheron."
  },
  {
   "n": 72,
   "s": "Hf",
   "nom": "Hafnium",
-  "img": "ALF",
-  "deco": "« Haf » ≈ ALF",
-  "lien": "ALF attrape les tentacules et les gobe comme des spaghettis."
+  "img": "Hache de bûcheron",
+  "deco": "« Hache » ≈ Hafnium",
+  "lien": "La hache tranche les tentacules, qui se tortillent."
  },
  {
   "n": 73,
@@ -653,23 +653,23 @@
   "nom": "Thallium",
   "img": "Escarpins",
   "deco": "« Talon » ≈ Thallium",
-  "lien": "Un talon aiguille perce la cartouche, qui explose en pluie de plombs."
+  "lien": "Un talon aiguille accroche le fil à plomb, qui se met à osciller."
  },
  {
   "n": 82,
   "s": "Pb",
   "nom": "Plomb",
-  "img": "Cartouche de fusil",
-  "deco": "Plombs de chasse",
-  "lien": "Les plombs volent vers Julie, qui les arrête d'une main en souriant."
+  "img": "Fil à plomb de maçon",
+  "deco": "Le plomb du fil à plomb",
+  "lien": "Le fil casse et le plomb tombe sur le biscuit, qui s'émiette."
  },
  {
   "n": 83,
   "s": "Bi",
   "nom": "Bismuth",
-  "img": "Julie Bismuth, une amie",
-  "deco": "Son nom de famille",
-  "lien": "Julie déploie le drapeau polonais."
+  "img": "Biscuit",
+  "deco": "« Bis-cuit » ≈ Bismuth",
+  "lien": "Les miettes du biscuit dessinent le drapeau polonais."
  },
  {
   "n": 84,
@@ -709,30 +709,30 @@
   "nom": "Radium",
   "img": "Radis",
   "deco": "« Radis-um »",
-  "lien": "Le radis tombe dans le pot d'Activia et l'éclabousse."
+  "lien": "Le radis tombe sur le clap de cinéma, qui claque : « Action ! »"
  },
  {
   "n": 89,
   "s": "Ac",
   "nom": "Actinium",
-  "img": "Yaourt Activia",
-  "deco": "« Activia » ≈ Actinium",
-  "lien": "Le yaourt jaillit jusqu'au plafond gris et éclabousse Thor."
+  "img": "Clap de cinéma",
+  "deco": "« Action ! » ≈ Actinium",
+  "lien": "Le clap claque si fort qu'il s'envole jusqu'au plafond gris et heurte Thor."
  },
  {
   "n": 90,
   "s": "Th",
   "nom": "Thorium",
-  "img": "Thor",
+  "img": "Thor, dieu nordique au marteau",
   "deco": "« Thor-ium »",
-  "lien": "Thor abat son marteau sur le pot au bouclier, qui résiste."
+  "lien": "Thor abat son marteau sur le clap au bouclier, qui résiste."
  },
  {
   "n": 91,
   "s": "Pa",
   "nom": "Protactinium",
-  "img": "Pot de yaourt avec un bouclier",
-  "deco": "« Protège » + Actinium",
+  "img": "Clap de cinéma avec un bouclier",
+  "deco": "« Protège » + « Action » ≈ Protactinium",
   "lien": "Le bouclier renvoie l'éclair sur la centrale nucléaire, qui crache sa fumée."
  },
  {
@@ -749,15 +749,15 @@
   "nom": "Neptunium",
   "img": "Trident de Neptune",
   "deco": "Neptune",
-  "lien": "Le trident pique les fesses de Pluto, qui bondit en hurlant."
+  "lien": "Le trident pique la planète Pluton, qui se met à tourner sur elle-même."
  },
  {
   "n": 94,
   "s": "Pu",
   "nom": "Plutonium",
-  "img": "Pluto",
-  "deco": "« Pluto-nium »",
-  "lien": "Pluto mord le drapeau américain et le secoue."
+  "img": "Planète Pluton glacée",
+  "deco": "Pluton ≈ Plutonium",
+  "lien": "Pluton roule et s'enroule dans le drapeau américain."
  },
  {
   "n": 95,
@@ -781,23 +781,23 @@
   "nom": "Berkélium",
   "img": "Ours qui tire la langue",
   "deco": "« Beurk »",
-  "lien": "L'ours recrache tout sur la Cadillac rose du rappeur."
+  "lien": "L'ours recrache tout sur la planche du surfeur."
  },
  {
   "n": 98,
   "s": "Cf",
   "nom": "Californium",
-  "img": "Rappeur devant une Cadillac rose",
-  "deco": "Californie",
-  "lien": "La Cadillac rose recule et renverse le tableau d'Einstein."
+  "img": "Surfeur sous les palmiers",
+  "deco": "Californie ≈ Californium",
+  "lien": "La planche du surfeur glisse et renverse le tableau noir couvert d'E = mc²."
  },
  {
   "n": 99,
   "s": "Es",
   "nom": "Einsteinium",
-  "img": "Einstein et son tableau",
-  "deco": "Einstein",
-  "lien": "Einstein lance sa craie, qui file par le couloir jusqu'au labo d'alchimiste et atterrit dans la cour de la ferme."
+  "img": "Tableau noir avec E = mc²",
+  "deco": "La formule d'Einstein ≈ Einsteinium",
+  "lien": "La craie s'échappe du tableau, file par le couloir jusqu'au labo d'alchimiste et atterrit dans la cour de la ferme."
  },
  {
   "n": 100,
@@ -813,15 +813,15 @@
   "nom": "Mendélévium",
   "img": "Tableau périodique",
   "deco": "Mendeleïev, son auteur",
-  "lien": "Le tableau périodique se roule en ruban, au bout duquel pend la médaille Nobel."
+  "lien": "Le tableau périodique se roule en ruban autour d'un bâton de dynamite."
  },
  {
   "n": 102,
   "s": "No",
   "nom": "Nobélium",
-  "img": "Médaille Nobel",
-  "deco": "Alfred Nobel",
-  "lien": "La médaille Nobel roule dans le sable jusqu'aux pieds de Lawrence d'Arabie, qui la ramasse."
+  "img": "Bâton de dynamite",
+  "deco": "Alfred Nobel, inventeur de la dynamite ≈ Nobélium",
+  "lien": "La mèche grésille dans le sable jusqu'aux pieds de Lawrence d'Arabie, qui l'écrase du talon."
  },
  {
   "n": 103,
@@ -829,23 +829,23 @@
   "nom": "Lawrencium",
   "img": "Lawrence d'Arabie",
   "deco": "Lawrence",
-  "lien": "Lawrence se rase avec le rasoir géant posé sur la Ford T, puis démarre."
+  "lien": "Lawrence d'Arabie s'engage sur une rue en terre qui mène à un château fort."
  },
  {
   "n": 104,
   "s": "Rf",
   "nom": "Rutherfordium",
-  "img": "Rasoir et Ford T",
-  "deco": "« Ru-ther-Ford »",
-  "lien": "La Ford T klaxonne, et Dumbo s'envole de peur en battant des oreilles."
+  "img": "Rue en terre menant à un château fort",
+  "deco": "« Rue-terre-fort » ≈ Rutherfordium",
+  "lien": "Le pont-levis s'abaisse avec fracas, et les enceintes du sound system se mettent à trembler."
  },
  {
   "n": 105,
   "s": "Db",
   "nom": "Dubnium",
-  "img": "Dumbo",
-  "deco": "« Dub-nium » ≈ Dumbo",
-  "lien": "Dumbo atterrit sur la tête du cyborg, qui le repousse d'un bras mécanique."
+  "img": "Sound system dub",
+  "deco": "Le « dub » ≈ Dubnium",
+  "lien": "Les basses du sound system font vibrer le cyborg, qui débranche les enceintes d'un bras mécanique."
  },
  {
   "n": 106,
@@ -893,15 +893,15 @@
   "nom": "Roentgenium",
   "img": "Génie couronné",
   "deco": "« Roi-génie »",
-  "lien": "Le génie exauce un vœu et fait apparaître la Coupe du monde."
+  "lien": "Le génie exauce un vœu et fait apparaître une coupe de champion dorée."
  },
  {
   "n": 112,
   "s": "Cn",
   "nom": "Copernicium",
-  "img": "Coupe du monde",
-  "deco": "« Coupe-ernicium »",
-  "lien": "La Coupe du monde tombe et écrase l'oignon, qui fait pleurer tout le monde."
+  "img": "Coupe de champion dorée",
+  "deco": "« Coupe-ernicium » ≈ Copernicium",
+  "lien": "La coupe tombe et écrase l'oignon, qui fait pleurer tout le monde."
  },
  {
   "n": 113,
@@ -925,15 +925,15 @@
   "nom": "Moscovium",
   "img": "Cathédrale Saint-Basile",
   "deco": "Moscou",
-  "lien": "Les bulbes enneigés de la cathédrale s'effondrent sur la Mort, qui grelotte."
+  "lien": "Les bulbes enneigés de la cathédrale s'effondrent sur un livre, qui gèle sous la neige."
  },
  {
   "n": 116,
   "s": "Lv",
   "nom": "Livermorium",
-  "img": "La Mort sous la neige",
-  "deco": "« L'hiver-mort »",
-  "lien": "La Mort, d'un coup de faux, tranche la raquette et la balle de tennis."
+  "img": "Livre gelé sous la neige",
+  "deco": "« Livre » + « mort » de froid ≈ Livermorium",
+  "lien": "Le livre gelé s'ouvre d'un coup et coupe en deux la raquette et la balle de tennis."
  },
  {
   "n": 117,
@@ -941,14 +941,14 @@
   "nom": "Tennessine",
   "img": "Raquette et balle de tennis",
   "deco": "« Tennis-ine »",
-  "lien": "La moitié de balle frappe Wolverine en pleine tête, et il hurle en sortant ses griffes."
+  "lien": "La moitié de balle frappe l'ogre en pleine tête, et il hurle de colère."
  },
  {
   "n": 118,
   "s": "Og",
   "nom": "Oganesson",
-  "img": "Wolverine qui hurle",
-  "deco": "« Logan-son »",
+  "img": "Ogre qui hurle",
+  "deco": "« Ogre » ≈ Oganesson",
   "lien": ""
  }
 ]
