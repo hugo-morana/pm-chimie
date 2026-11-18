@@ -52,6 +52,11 @@ final class PalaceModel {
         guard !started else { return }
         started = true
         go(0, instant: true)
+        // visite libre par défaut, à l'entrée du laboratoire moderne
+        mode = .free
+        scene.setOverviewHidden(false)
+        scene.enterFree(at: Palace.rooms[0].origin + [0, 1.7, 6.2], yaw: 0)
+        refreshScene()
     }
 
     func refreshScene() {

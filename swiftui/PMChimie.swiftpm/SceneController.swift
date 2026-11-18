@@ -53,6 +53,7 @@ final class SceneController: NSObject, SCNSceneRendererDelegate {
         var pos = SIMD3<Float>(0, 1.7, 6)
         var joy = SIMD2<Float>(0, 0)
         var target: FreeTarget? = nil
+        var fov: Float = 0          // angle de vue (zoom à deux doigts) ; 0 = valeur par défaut
     }
 
     struct FreeTarget { var x: Float; var z: Float; var look: SIMD3<Float>? }
@@ -141,6 +142,9 @@ final class SceneController: NSObject, SCNSceneRendererDelegate {
         pan.maximumNumberOfTouches = 1
         view.addGestureRecognizer(tap)
         view.addGestureRecognizer(pan)
+        let pinch = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(_:)))
+        pinch.delegate = self
+        view.addGestureRecognizer(pinch)
     }
 
     private func addLights() {
@@ -602,6 +606,7 @@ final class SceneController: NSObject, SCNSceneRendererDelegate {
         }
         fs.pitch = 0
         fs.target = nil
+        fs.fov = vfov
         fs.on = true
     }
 
@@ -646,8 +651,10 @@ final class SceneController: NSObject, SCNSceneRendererDelegate {
             let d = g.translation(in: view)
             g.setTranslation(.zero, in: view)
             lock.lock()
-            fs.yaw += Float(d.x) * 0.005
-            fs.pitch = min(max(fs.pitch + Float(d.y) * 0.005, -1.35), 1.35)
+            // plus on zoome, plus le regard tourne lentement
+            let k: Float = 0.005 * (fs.fov > 0 ? fs.fov / vfov : 1)
+            fs.yaw += Float(d.x) * k
+            fs.pitch = min(max(fs.pitch + Float(d.y) * k, -1.35), 1.35)
             fs.target = nil
             lock.unlock()
         } else if g.state == .ended {
@@ -656,6 +663,18 @@ final class SceneController: NSObject, SCNSceneRendererDelegate {
                 onSwipe?(t.x < 0 ? 1 : -1)
             }
         }
+    }
+
+    /// Visite libre : pincer pour zoomer ou dézoomer (angle de vue de la caméra).
+    private var pinchStartFov: Float = 0
+
+    @objc private func handlePinch(_ g: UIPinchGestureRecognizer) {
+        lock.lock(); defer { lock.unlock() }
+        guard fs.on else { return }
+        if fs.fov <= 0 { fs.fov = vfov }
+        if g.state == .began { pinchStartFov = fs.fov }
+        guard pinchStartFov > 0, g.scale > 0 else { return }
+        fs.fov = min(max(pinchStartFov / Float(g.scale), 12), vfov + 25)
     }
 
     // MARK: - Boucle de rendu
@@ -699,9 +718,12 @@ final class SceneController: NSObject, SCNSceneRendererDelegate {
                 tween = nil
             }
         }
-        let p = camPos, tg = camTgt, up = camUp, isFree = fs.on
+        let p = camPos, tg = camTgt, up = camUp, isFree = fs.on, fov = fs.fov
         lock.unlock()
 
+        if isFree && fov > 0, let cam = cameraNode.camera, abs(Float(cam.fieldOfView) - fov) > 0.01 {
+            cam.fieldOfView = CGFloat(fov)
+        }
         cameraNode.simdPosition = p
         if simd_distance(p, tg) > 1e-4 {
             let fwd = simd_normalize(tg - p)
@@ -769,5 +791,13 @@ final class SceneController: NSObject, SCNSceneRendererDelegate {
             let f = focus
             DispatchQueue.main.async { [weak self] in self?.onFreeFocus?(f, room) }
         }
+    }
+}
+
+
+extension SceneController: UIGestureRecognizerDelegate {
+    /// Le pincement peut accompagner les autres gestes (rotation du regard, toucher).
+    func gestureRecognizer(_ g: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith other: UIGestureRecognizer) -> Bool {
+        g is UIPinchGestureRecognizer || other is UIPinchGestureRecognizer
     }
 }
