@@ -112,8 +112,8 @@ ROWS = """0|Neutron|Neutron lumineux|Particule sans charge, « élément zéro �
 107|Bohrium|Gorille dans un atome|L'atome de Bohr|Le gorille libéré attrape le grappin et s'y balance.
 108|Hassium|Grappin|« Hass » ≈ crochet|Le grappin crochète la toque du petit cuisinier et l'arrache.
 109|Meitnérium|Petit cuisinier à toque|« Maître » cuisinier|Le cuisinier lance sa spatule, qui file jusqu'au panneau suivant et atterrit au centre du stade.
-110|Darmstadtium|Stade|« Darm-stadt »|La ola du stade fait jaillir le génie couronné.
-111|Roentgenium|Génie couronné|« Roi-génie »|Le génie exauce un vœu et fait apparaître une coupe de champion dorée.
+110|Darmstadtium|Stade|« Darm-stadt »|La ola du stade fait tomber la lampe du roi des génies, qui se met à fumer.
+111|Roentgenium|Lampe du roi des génies|« Roi-génie »|De la fumée sort le génie, qui exauce un vœu et fait apparaître une coupe de champion dorée.
 112|Copernicium|Coupe de champion dorée|« Coupe-ernicium » ≈ Copernicium|La coupe tombe et écrase l'oignon, qui fait pleurer tout le monde.
 113|Nihonium|Oignon|« Ni-hon » ≈ oignon|L'odeur de l'oignon fait éternuer la truffe du chien.
 114|Flérovium|Truffe de chien|Le flair|La truffe flaire une piste jusqu'à la cathédrale Saint-Basile et renifle ses bulbes.

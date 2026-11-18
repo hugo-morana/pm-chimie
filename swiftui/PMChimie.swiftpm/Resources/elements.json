@@ -885,15 +885,15 @@
   "nom": "Darmstadtium",
   "img": "Stade",
   "deco": "« Darm-stadt »",
-  "lien": "La ola du stade fait jaillir le génie couronné."
+  "lien": "La ola du stade fait tomber la lampe du roi des génies, qui se met à fumer."
  },
  {
   "n": 111,
   "s": "Rg",
   "nom": "Roentgenium",
-  "img": "Génie couronné",
+  "img": "Lampe du roi des génies",
   "deco": "« Roi-génie »",
-  "lien": "Le génie exauce un vœu et fait apparaître une coupe de champion dorée."
+  "lien": "De la fumée sort le génie, qui exauce un vœu et fait apparaître une coupe de champion dorée."
  },
  {
   "n": 112,

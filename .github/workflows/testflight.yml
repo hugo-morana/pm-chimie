@@ -2,7 +2,7 @@ name: TestFlight
 
 on:
   push:
-    branches: [swiftui]
+    branches: [swiftui, appstore]
     paths:
       - "swiftui/**"
       - ".github/workflows/testflight.yml"
